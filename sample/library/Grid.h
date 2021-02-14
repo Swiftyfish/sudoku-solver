@@ -21,5 +21,20 @@ class Grid {
         Cell cells[81];
 
    public:
-        void buildGrid(std::string &grid){}
+        void buildGrid(std::string &grid){
+            int[81] gridValues = gridBuilder(grid);
+
+            for (int i = 0; i < 81; i++) {
+                int row = i / 9;
+                int column = i % 9;
+                int block = (row / 3) + 3 * (column / 3);  
+
+                Cell cell = new Cell(gridValues[i]);
+
+                rows[row] = cell;
+                columns[column] = cell;
+                blocks[block] = cell;
+                cells[i] = cell;
+            }
+        }
         

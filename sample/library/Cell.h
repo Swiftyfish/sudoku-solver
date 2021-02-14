@@ -6,14 +6,20 @@
 class Cell {
     private:
         int value; //The value contained within this cell, 0 for unassigned
+
         unsigned int possibleValues = 511; //The set of possible values for this cell
 
     public:
-        //The position of the cell within the group, labelled left to right
-        int position;
-        
         //Positions in the parent groups, Row : 0, Column : 1, Block : 2 
         int groupId[3];
+
+        void Cell() {
+            value = 0;
+        }
+
+        void Cell(cellValue) {
+            value = cellValue;
+        }
 
         void setValue(int cellValue) {
             value = cellValue;
@@ -42,12 +48,12 @@ class Cell {
 
         void printValues() {
             if (value){
-                std::cout << std::printf("Cell at position %d in GroupID [%d, %d, %d] has value: %d",
-                    position, groupId[0], groupId[1], groupId[2], getValue()) << std::endl;
+                std::cout << std::printf("Cell in GroupID [%d, %d, %d] has value: %d",
+                    groupId[0], groupId[1], groupId[2], getValue()) << std::endl;
             }
             else{
-                std::cout << std::printf("Cell at position %d in GroupID [%d, %d, %d] has values:",
-                    position, groupId[0], groupId[1], groupId[2]) << std::endl;
+                std::cout << std::printf("Cell in GroupID [%d, %d, %d] has values:",
+                     groupId[0], groupId[1], groupId[2]) << std::endl;
 
                 for (int v : *(this->getPossibleValues())) {
                     std::cout << v << ' ';
