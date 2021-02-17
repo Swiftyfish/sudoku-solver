@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -110,6 +111,90 @@ int checkGrid(vector<vector<int>> &grid, int x, int y) {
  *
  *  @return           A boolean stating whether the grid was solved or not
  */
+bool solveStochastic(vector<vector<int>> grid, int x, int y, int* iterCount) {
+    *iterCount += 1;
+    if (!(*iterCount % 10000)) {
+        //cout << "Reached " << *iterCount << " iterations" << endl;
+        progressBar(iterCount);
+    }
+ 
+    bool check = false;
+ 
+    // Get the set of possible values at x, y
+    int possible = checkGrid(grid, x, y);
+ 
+    //cout << "Checking cell " << 9 * x + y << " Possible : " << possible << endl;
+ 
+    if (grid[x][y]){
+        // Don't change the value, just move to the next position in the grid
+        // and continue solving
+ 
+        if (x == 8 and y == 8) {
+            cout << endl << "Finished" << endl;
+            printGrid(grid);
+            return true;
+        }
+
+        if (y == 8){
+             check = solveStochastic(grid, x+1, 0, iterCount);
+        }
+        else{
+            check = solveStochastic(grid, x, y+1, iterCount);
+        }
+    }
+    else{
+        vector<int> possibleValues;
+
+        //Calculate the possible values and store them in a vector
+        for (int i = 0; i < 9; i++) {
+            if (possible & (1<<i)) {
+                possibleValues.push_back(i+1);
+            }
+        }
+
+        //Shuffle the vector of possible values
+        random_shuffle(possibleValues.begin(), possibleValues.end());
+
+        for (int i : possibleValues){
+            //Set the current cell to i
+            //cout << "Set Cell " << x << ", " << y << " to " << i << endl;
+            grid[x][y] = i;
+
+            if (x == 8 and y == 8) {
+                cout << endl << "Finished" << endl;
+                printGrid(grid);
+                return true;
+            }
+
+            if (y == 8){
+                check = solveStochastic(grid, x+1, 0, iterCount);
+            }
+            else{
+                check = solveStochastic(grid, x, y+1, iterCount);
+            }
+
+            //Reset the current cell
+            grid[x][y] = 0;
+
+            if (check) {
+                return true;
+            }
+        }
+     }
+ 
+    return check;
+}
+
+/*
+ *  Recursive backtracking solver for a 3x3 sudoku
+ *
+ *  @param grid       The 3x3 grid as a vector of vectors containing the values 
+ *  @param x          The current row in the grid
+ *  @param y          The current column in the grid
+ *  @param iterCount  The current iteration count (number of recursion steps)
+ *
+ *  @return           A boolean stating whether the grid was solved or not
+ */
 bool solve(vector<vector<int>> grid, int x, int y, int* iterCount) {
     *iterCount += 1;
     if (!(*iterCount % 10000)) {
@@ -128,6 +213,12 @@ bool solve(vector<vector<int>> grid, int x, int y, int* iterCount) {
         // Don't change the value, just move to the next position in the grid
         // and continue solving
  
+        if (x == 8 and y == 8) {
+            cout << endl << "Finished" << endl;
+            printGrid(grid);
+            return true;
+        }
+
         if (y == 8){
              check = solve(grid, x+1, 0, iterCount);
         }
@@ -187,10 +278,18 @@ int main(int argc, char *argv[]) {
 
    int iterCount = 0;
 
+   bool check;
+
    //Start solving grid
-   bool check = solve(grid, 0, 0, &iterCount);
+   check = solve(grid, 0, 0, &iterCount);
     
-   cout << "Solved in " << iterCount << " iterations" << endl;
+   cout << "Solved via brute force method in " << iterCount << " iterations" << endl;
+
+   iterCount = 0;
+
+   check = solveStochastic(grid, 0, 0, &iterCount);
+    
+   cout << "Solved via stochastic method in " << iterCount << " iterations" << endl;
 
    return 0; 
 }
