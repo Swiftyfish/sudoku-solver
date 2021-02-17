@@ -7,8 +7,7 @@ Currently implemented:
 
 The current implementations find the possible values that can be placed in the target cell.
 
-The brute force solver walks through the branches starting from 1 and going up to 9. As a result of this puzzles can be designed to counteract this approach i.e. by forcing it to solve the first row as 9 8 7 6 5 4 3 2 1, which would take hundreds of millions of iterations.
-
+The brute force solver walks through the branches starting from 1 and going up to 9. As a result of this puzzles can be designed to counteract this approach i.e. by forcing it to solve the first row as 9 8 7 6 5 4 3 2 1, which could take tens of millions of iterations.
 The stochastic solver attempts to lower this worst case scenario by randomly selecting the cell values from the possible values. The upper bound for complexity is the same as the brute force approach but now puzzles cannot be designed maliciously in the same manner.
 
 Next stages:
